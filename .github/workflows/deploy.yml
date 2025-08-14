@@ -1,4 +1,4 @@
-name: Build & Deploy Next.js to VPS
+name: Build & Deploy Next.js SSR to VPS
 
 on:
   push:
@@ -24,11 +24,9 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
-      # Nén thư mục .next + package.json để copy sang VPS
       - name: Archive build
         run: tar -czf build.tar.gz .next package.json package-lock.json public
 
-      # Upload build qua VPS
       - name: Upload build to VPS
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -38,7 +36,6 @@ jobs:
           source: "build.tar.gz"
           target: "/var/www/egrocer-website"
 
-      # Giải nén và khởi động lại service trên VPS
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -47,6 +44,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /var/www/egrocer-website
+            rm -rf .next
             tar -xzf build.tar.gz
             rm -f build.tar.gz
             npm install --omit=dev

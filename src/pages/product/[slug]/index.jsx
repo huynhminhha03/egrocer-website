@@ -100,10 +100,15 @@ export default function Index({
 }) {
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
+  const [debugMode, setDebugMode] = useState(false);
   
   // Prevent hydration mismatch by only showing content after client mount
   useEffect(() => {
     setIsClient(true);
+    // Enable debug mode if URL contains debug parameter
+    if (typeof window !== 'undefined') {
+      setDebugMode(window.location.search.includes('debug=true'));
+    }
   }, []);
   
   // Use props from SSR if available, otherwise get from router (client-side)
@@ -129,6 +134,51 @@ export default function Index({
           favicon={favicon}
         />
         <div>Loading...</div>
+      </>
+    );
+  }
+
+  // Debug mode - show detailed information
+  if (debugMode) {
+    return (
+      <>
+        <MetaData
+          pageName="/product/"
+          title={title}
+          description={description}
+          keywords={keywords}
+          structuredData={schemaMarkup}
+          ogUrl={pageUrl}
+          ogImage={og_image}
+          favicon={favicon}
+        />
+        <div style={{ padding: "20px", fontFamily: "monospace" }}>
+          <h1>Product Page Debug Mode</h1>
+          <div style={{ background: "#f5f5f5", padding: "15px", borderRadius: "5px", marginBottom: "20px" }}>
+            <h3>Debug Information:</h3>
+            <p><strong>Slug from props:</strong> {propSlug || 'undefined'}</p>
+            <p><strong>Slug from router:</strong> {router.query.slug || 'undefined'}</p>
+            <p><strong>Final slug:</strong> {slug || 'undefined'}</p>
+            <p><strong>Router ready:</strong> {router.isReady ? 'Yes' : 'No'}</p>
+            <p><strong>Current URL:</strong> {typeof window !== 'undefined' ? window.location.href : 'Server'}</p>
+            <p><strong>Decoded slug:</strong> {slug ? decodeURIComponent(slug) : 'undefined'}</p>
+            <p><strong>Encoded slug:</strong> {slug ? encodeURIComponent(slug) : 'undefined'}</p>
+            <p><strong>Contains Vietnamese chars:</strong> {/[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/.test(slug || '') ? 'Yes' : 'No'}</p>
+          </div>
+          <div style={{ background: "#e8f4f8", padding: "15px", borderRadius: "5px" }}>
+            <h3>Test Links:</h3>
+            <ul>
+              <li><a href="/product/test?debug=true">Test page with debug</a></li>
+              <li><a href="/product/Rau-m?debug=true">Rau-m with debug</a></li>
+              <li><a href="/product/debug">Debug page</a></li>
+            </ul>
+          </div>
+          <div style={{ marginTop: "20px" }}>
+            <button onClick={() => setDebugMode(false)} style={{ padding: "10px 20px", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "5px" }}>
+              Exit Debug Mode
+            </button>
+          </div>
+        </div>
       </>
     );
   }

@@ -2,26 +2,30 @@
     RewriteEngine On
     RewriteBase /
     
+    # Enable UTF-8 handling for Vietnamese characters
+    AddDefaultCharset UTF-8
+    
     # Show the current request URI in the response
     # ErrorDocument 200 "%{REQUEST_URI}"
     # RewriteRule ^ - [L,R=200]
     # RewriteRule ^([^/]+)/$ /404.html [L]
 
 
-    # Handle Next.js dynamic routes
+    # Handle Next.js dynamic routes for static export
+    # All unmatched routes should fallback to index.html for client-side routing
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^categories/$ /404.html [L]
-    RewriteRule ^categories/([^/]+)/?$ /categories/[slug].html [L]
+    RewriteRule ^categories/$ /categories.html [L]
+    RewriteRule ^categories/([^/]+)/?$ /index.html [L]
     
     RewriteRule ^order-detail/$ /order-detail.html [L]
-    RewriteRule ^order-detail/([^/]+)/?$ /order-detail/[orderid].html [L]
+    RewriteRule ^order-detail/([^/]+)/?$ /index.html [L]
     
     RewriteRule ^product/$ /products.html [L]
-    RewriteRule ^product/([^/]+)/?$ /product/[slug].html [L]
+    RewriteRule ^product/([^/]+)/?$ /index.html [L]
     
     RewriteRule ^profile/orderhistory/$ /profile/orderhistory.html [L]
-    RewriteRule ^profile/orderhistory/([^/]+)/?$ /profile/orderhistory/[orderid].html [L]
+    RewriteRule ^profile/orderhistory/([^/]+)/?$ /index.html [L]
 
     # Handle other static routes
     RewriteRule ^profile/$ /profile.html [L]

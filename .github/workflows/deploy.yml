@@ -25,6 +25,8 @@ jobs:
         run: |
           npm run build
           npm run export
+        env:
+          NEXT_PUBLIC_SEO: false
 
       - name: Archive build
         run: tar -czf build.tar.gz out
@@ -53,9 +55,21 @@ jobs:
             # Ensure .htaccess is properly placed
             if [ -f out/.htaccess ]; then
               echo "✅ .htaccess file found in out directory"
+              cat out/.htaccess | head -10
             else
               echo "❌ .htaccess file not found in out directory"
             fi
+            
+            # Check if index.html exists
+            if [ -f out/index.html ]; then
+              echo "✅ index.html file found"
+            else
+              echo "❌ index.html file not found"
+            fi
+            
+            # List contents of out directory
+            echo "📁 Contents of out directory:"
+            ls -la out/ | head -20
             
             pm2 restart frontend || pm2 start npx --name "frontend" -- serve out -p 3000
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 // const SocialPages = dynamic(() => import('@/components/commonComponents/SocialPages'), { ssr: false })
 import dynamic from "next/dynamic";
@@ -99,6 +99,12 @@ export default function Index({
   favicon
 }) {
   const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+  
+  // Prevent hydration mismatch by only showing content after client mount
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   
   // Use props from SSR if available, otherwise get from router (client-side)
   const slug = propSlug || router.query.slug;
@@ -107,6 +113,25 @@ export default function Index({
   const keywords = propKeywords || process.env.NEXT_PUBLIC_META_KEYWORDS || "";
   
   const pageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/product/${slug}`;
+  
+  // Show loading state until client is ready (prevents hydration mismatch)
+  if (!isClient) {
+    return (
+      <>
+        <MetaData
+          pageName="/product/"
+          title={title}
+          description={description}
+          keywords={keywords}
+          structuredData={schemaMarkup}
+          ogUrl={pageUrl}
+          ogImage={og_image}
+          favicon={favicon}
+        />
+        <div>Loading...</div>
+      </>
+    );
+  }
   
   return (
     <>

@@ -27,7 +27,7 @@ jobs:
           NEXT_PUBLIC_SEO: false
 
       - name: Archive build
-        run: tar -czf build.tar.gz .next package.json next.config.js public
+        run: tar -czf build.tar.gz .next package.json next.config.mjs public
 
       - name: Upload build to VPS
         uses: appleboy/scp-action@v0.1.4

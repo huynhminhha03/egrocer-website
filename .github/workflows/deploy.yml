@@ -1,4 +1,4 @@
-name: Build & Deploy Next.js Static to VPS
+name: Build & Deploy Next.js SSR to VPS
 
 on:
   push:
@@ -19,17 +19,15 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --frozen-lockfile
 
-      - name: Build & Export Next.js app
-        run: |
-          npm run build
-          npm run export
+      - name: Build Next.js app
+        run: npm run build
         env:
           NEXT_PUBLIC_SEO: false
 
       - name: Archive build
-        run: tar -czf build.tar.gz out
+        run: tar -czf build.tar.gz .next package.json next.config.js public
 
       - name: Upload build to VPS
         uses: appleboy/scp-action@v0.1.4
@@ -48,23 +46,13 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /var/www/egrocer-website
-            rm -rf out
+            rm -rf .next
+            rm -f build.tar.gz
             tar -xzf build.tar.gz
             rm -f build.tar.gz
-            
-            # Check if .htaccess was properly copied
-            if [ -f out/.htaccess ]; then
-              echo "✅ .htaccess file found"
-            else
-              echo "❌ .htaccess file not found"
-            fi
-            
-            # Check if index.html exists (required for client-side routing)
-            if [ -f out/index.html ]; then
-              echo "✅ index.html found"
-            else
-              echo "❌ index.html not found"
-            fi
-            
-            pm2 restart frontend || pm2 start npx --name "frontend" -- serve out -p 3000
 
+            # Cài deps nếu cần (chỉ chạy lần đầu hoặc khi thay đổi package.json)
+            npm install --production --frozen-lockfile
+
+            # Restart bằng PM2
+            pm2 restart frontend || pm2 start npm --name "frontend" -- start

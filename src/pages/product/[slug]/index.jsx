@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import React from "react";
 // const SocialPages = dynamic(() => import('@/components/commonComponents/SocialPages'), { ssr: false })
 import dynamic from "next/dynamic";
 const ProductDescriptionPage = dynamic(
@@ -10,15 +9,11 @@ import MetaData from "@/components/metadata-component/MetaData";
 import axios from "axios";
 import { extractJSONFromMarkup } from "@/utils/helperFunction";
 
-// Function to determine if we should use SSR or client-side routing
-const shouldUseSSR = () => {
-  return process.env.NEXT_PUBLIC_SEO === "true";
-};
-
-// Define SSR function conditionally
+// Only export getServerSideProps when SEO is enabled
+// For static export mode, we rely on client-side routing
 let getServerSidePropsFunction = null;
 
-if (shouldUseSSR()) {
+if (process.env.NEXT_PUBLIC_SEO === "true") {
   getServerSidePropsFunction = async (context) => {
     const { slug } = context.params;
     let isMetadata = false;
@@ -90,99 +85,15 @@ export const getServerSideProps = getServerSidePropsFunction;
  
 
 export default function Index({
-  slug: propSlug,
-  title: propTitle,
-  description: propDescription,
-  keywords: propKeywords,
+  slug,
+  title,
+  description,
+  keywords,
   og_image,
   schemaMarkup,
   favicon
 }) {
-  const router = useRouter();
-  const [isClient, setIsClient] = useState(false);
-  const [debugMode, setDebugMode] = useState(false);
-  
-  // Prevent hydration mismatch by only showing content after client mount
-  useEffect(() => {
-    setIsClient(true);
-    // Enable debug mode if URL contains debug parameter
-    if (typeof window !== 'undefined') {
-      setDebugMode(window.location.search.includes('debug=true'));
-    }
-  }, []);
-  
-  // Use props from SSR if available, otherwise get from router (client-side)
-  const slug = propSlug || router.query.slug;
-  const title = propTitle || process.env.NEXT_PUBLIC_META_TITLE || "Product";
-  const description = propDescription || process.env.NEXT_PUBLIC_META_DESCRIPTION || "";
-  const keywords = propKeywords || process.env.NEXT_PUBLIC_META_KEYWORDS || "";
-  
   const pageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/product/${slug}`;
-  
-  // Show loading state until client is ready (prevents hydration mismatch)
-  if (!isClient) {
-    return (
-      <>
-        <MetaData
-          pageName="/product/"
-          title={title}
-          description={description}
-          keywords={keywords}
-          structuredData={schemaMarkup}
-          ogUrl={pageUrl}
-          ogImage={og_image}
-          favicon={favicon}
-        />
-        <div>Loading...</div>
-      </>
-    );
-  }
-
-  // Debug mode - show detailed information
-  if (debugMode) {
-    return (
-      <>
-        <MetaData
-          pageName="/product/"
-          title={title}
-          description={description}
-          keywords={keywords}
-          structuredData={schemaMarkup}
-          ogUrl={pageUrl}
-          ogImage={og_image}
-          favicon={favicon}
-        />
-        <div style={{ padding: "20px", fontFamily: "monospace" }}>
-          <h1>Product Page Debug Mode</h1>
-          <div style={{ background: "#f5f5f5", padding: "15px", borderRadius: "5px", marginBottom: "20px" }}>
-            <h3>Debug Information:</h3>
-            <p><strong>Slug from props:</strong> {propSlug || 'undefined'}</p>
-            <p><strong>Slug from router:</strong> {router.query.slug || 'undefined'}</p>
-            <p><strong>Final slug:</strong> {slug || 'undefined'}</p>
-            <p><strong>Router ready:</strong> {router.isReady ? 'Yes' : 'No'}</p>
-            <p><strong>Current URL:</strong> {typeof window !== 'undefined' ? window.location.href : 'Server'}</p>
-            <p><strong>Decoded slug:</strong> {slug ? decodeURIComponent(slug) : 'undefined'}</p>
-            <p><strong>Encoded slug:</strong> {slug ? encodeURIComponent(slug) : 'undefined'}</p>
-            <p><strong>Contains Vietnamese chars:</strong> {/[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/.test(slug || '') ? 'Yes' : 'No'}</p>
-          </div>
-          <div style={{ background: "#e8f4f8", padding: "15px", borderRadius: "5px" }}>
-            <h3>Test Links:</h3>
-            <ul>
-              <li><a href="/product/test?debug=true">Test page with debug</a></li>
-              <li><a href="/product/Rau-m?debug=true">Rau-m with debug</a></li>
-              <li><a href="/product/debug">Debug page</a></li>
-            </ul>
-          </div>
-          <div style={{ marginTop: "20px" }}>
-            <button onClick={() => setDebugMode(false)} style={{ padding: "10px 20px", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "5px" }}>
-              Exit Debug Mode
-            </button>
-          </div>
-        </div>
-      </>
-    );
-  }
-  
   return (
     <>
       <MetaData

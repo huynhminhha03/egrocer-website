@@ -52,24 +52,19 @@ jobs:
             tar -xzf build.tar.gz
             rm -f build.tar.gz
             
-            # Ensure .htaccess is properly placed
+            # Check if .htaccess was properly copied
             if [ -f out/.htaccess ]; then
-              echo "✅ .htaccess file found in out directory"
-              cat out/.htaccess | head -10
+              echo "✅ .htaccess file found"
             else
-              echo "❌ .htaccess file not found in out directory"
+              echo "❌ .htaccess file not found"
             fi
             
-            # Check if index.html exists
+            # Check if index.html exists (required for client-side routing)
             if [ -f out/index.html ]; then
-              echo "✅ index.html file found"
+              echo "✅ index.html found"
             else
-              echo "❌ index.html file not found"
+              echo "❌ index.html not found"
             fi
-            
-            # List contents of out directory
-            echo "📁 Contents of out directory:"
-            ls -la out/ | head -20
             
             pm2 restart frontend || pm2 start npx --name "frontend" -- serve out -p 3000
 

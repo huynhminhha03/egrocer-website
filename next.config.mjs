@@ -34,7 +34,5 @@ const nextConfig = {
   }
 };
 
-if (process.env.NEXT_PUBLIC_SEO === "false") {
-  nextConfig.output = "export";
-}
+
 export default nextConfig;

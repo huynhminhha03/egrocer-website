@@ -6,13 +6,13 @@ importScripts(
 );
 
 firebase.initializeApp({
-  apiKey: "FIREBASE_API_KEY_HERE",
-  authDomain: "FIREBASE_AUTH_DOMAIN_HERE",
-  projectId: "FIREBASE_PROJECT_ID_HERE",
-  storageBucket: "FIREBASE_STORAGE_BUCKET_HERE",
-  messagingSenderId: "FIREBASE_MESSAGING_SENDER_ID",
-  appId: "FIREBASE_APP_ID",
-  measurementId: "FIREBASE_MEASUREMENT_ID",
+  apiKey: "AIzaSyBG5Zq9vasnZKY7euemNAqJSL8Meh3QKys",
+  authDomain: "egrocer-1431f.firebaseapp.com",
+  projectId: "egrocer-1431f",
+  storageBucket: "egrocer-1431f.firebasestorage.app",
+  messagingSenderId: "557892105193",
+  appId: "1:557892105193:web:5b4ab279c8a22079ed1178",
+  measurementId: "G-DN9F5VQ17X",
 });
 
 const messaging = firebase.messaging();

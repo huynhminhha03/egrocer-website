@@ -46,7 +46,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /var/www/egrocer-website
-            rm -rf .next
             rm -f build.tar.gz
             tar -xzf build.tar.gz
             rm -f build.tar.gz

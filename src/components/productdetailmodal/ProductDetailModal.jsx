@@ -30,6 +30,7 @@ import Loader from '../loader/Loader'
 import ImageWithPlaceholder from '../image-with-placeholder/ImageWithPlaceholder'
 import SingleSellerConfirmationModal from '../single-seller-confirmation-modal/SingleSellerConfirmationModal'
 import { isRtl } from '@/lib/utils'
+import { formatVND } from '../ui/fomatnumber'
 
 
 const ProductDetailModal = ({ product, showDetailModal, setShowDetailModal }) => {
@@ -371,8 +372,8 @@ const ProductDetailModal = ({ product, showDetailModal, setShowDetailModal }) =>
                                 <div className=' col-span-12 md:col-span-7 flex flex-col gap-6'>
                                     <div className='flex items-center gap-1'>
                                         {selectVariant?.discounted_price !== 0 && selectVariant?.discounted_price !== selectVariant?.price ? <>
-                                            <h2 className='font-bold text-3xl '>{currency}{selectVariant?.discounted_price}</h2><h3 className='line-through font-bold text-base text-gray-500'>{currency}{selectVariant?.price}</h3>
-                                        </> : <> <h2 className='font-bold text-3xl '>{currency}{selectVariant?.price}</h2></>}
+                                            <h2 className='font-bold text-3xl '>{formatVND(selectVariant?.discounted_price)} {currency}</h2><h3 className='line-through font-bold text-base text-gray-500'>{formatVND(selectVariant?.price)} {currency}</h3>
+                                        </> : <> <h2 className='font-bold text-3xl '>{formatVND(selectVariant?.price)} {currency}</h2></>}
                                     </div>
                                     <div className='flex flex-col'>
                                         <p className='font-normal text-base'>{t("chooseVariant")}</p>
@@ -384,7 +385,7 @@ const ProductDetailModal = ({ product, showDetailModal, setShowDetailModal }) =>
                                                     return (
                                                         <div className={`flex flex-col col-span-6 md:col-span-4 lg:col-span-3 mr-2 my-1 text-center rounded-sm   justify-center items-center cursor-pointer ${selectVariant.id == variant.id ? "primaryBorder addToCartColor" : "cardBorder"}`} key={variant.id} onClick={() => handleChangeVariant(variant)}>
                                                             <p className='font-bold text-sm'>{`${variant?.measurement} ${variant?.stock_unit_name}`}</p>
-                                                            <span className='flex gap-1 text-[13px] line-clamp-1'><p>{currency}{discountPrice != 0 && discountPrice !== price ? discountPrice : price}</p>{discountPrice != 0 && discountPrice !== price ? <p className='line-through'>{currency}{price}</p> : <></>}</span>
+                                                            <span className='flex gap-1 text-[13px] line-clamp-1'><p>{formatVND(discountPrice != 0 && discountPrice !== price ? discountPrice : price)}{currency}</p>{discountPrice != 0 && discountPrice !== price ? <p className='line-through'>{formatVND(price)}{currency}</p> : <></>}</span>
                                                         </div>
                                                     )
                                                 })

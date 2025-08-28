@@ -20,6 +20,7 @@ import CouponCodeDrawer from '@/components/couponcode/CouponCodeDrawer';
 import { RiCoupon3Line } from 'react-icons/ri';
 import Link from 'next/link';
 import Loader from '../loader/Loader';
+import { formatVND } from '../ui/fomatnumber';
 
 const CartDrawer = ({ showCart, setShowCart, setMobileActiveKey }) => {
     const dispatch = useDispatch();
@@ -192,7 +193,7 @@ const CartDrawer = ({ showCart, setShowCart, setMobileActiveKey }) => {
                                 <div className="space-y-6">
                                     <div className="flex justify-between text-sm">
                                         <span>{t("total")}</span>
-                                        <span className="font-bold">{setting?.currency}{cart.isGuest ? cart?.guestCartTotal : isCouponApplied ? (cart?.cartSubTotal - cart?.promo_code?.discount)?.toFixed(2) : cart?.cartSubTotal.toFixed(2)}</span>
+                                        <span className="font-bold">{formatVND(cart.isGuest ? cart?.guestCartTotal : isCouponApplied ? (formatVND(cart?.cartSubTotal - cart?.promo_code?.discount))?.toFixed(2) : formatVND(cart?.cartSubTotal)?.toFixed(2))} {setting?.currency}</span>
                                     </div>
                                 </div>
                                 <div className="mt-4 space-y-2">

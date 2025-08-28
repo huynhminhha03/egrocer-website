@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import CategoryCard from './CategoryCard'
+import * as api from "@/api/apiRoutes";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import 'swiper/css';
@@ -17,8 +18,14 @@ const CategoriesContainer = ({ categories }) => {
     const rtl = isRtl();
     const dispatch = useDispatch();
     const router = useRouter();
-    const selectedCategories = useSelector(state => state.ProductFilter?.selectedCategories);
-    const language = useSelector(state => state.Language.selectedLanguage)
+    const { slug } = router.query;
+    const categoryPerPage = 12;
+
+    const slug_id = slug === "all" ? "" : (slug || "");
+    const selectedCategories = useSelector(state => state.ProductFilter?.selectedCategories || []);
+    const language = useSelector(state => state.Language.selectedLanguage);
+    const [fetchedCategories, setFetchedCategories] = useState([]);
+    const [loading, setLoading] = useState(false);
     const handleCategoryClick = (category) => {
         dispatch(setSelectedCategories({ data: category?.id }))
         if (category?.has_child) {
@@ -29,6 +36,51 @@ const CategoriesContainer = ({ categories }) => {
             router.push(`/products`)
         }
     }
+
+    const fetchCategories = async (Slug = "") => {
+        setLoading(true);
+        try {
+            const result = await api.getCategories({
+                limit: categoryPerPage,
+                slug: Slug,
+            });
+            if (Array.isArray(result)) {
+                setFetchedCategories(result);
+            } else if (result?.categories && Array.isArray(result.categories)) {
+                setFetchedCategories(result.categories);
+            } else if (result?.data && Array.isArray(result.data)) {
+                // some endpoints return { data: [...] }
+                setFetchedCategories(result.data);
+            } else {
+                setFetchedCategories([]);
+            }
+        } catch (error) {
+            console.log("Error", error);
+            setFetchedCategories([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        // only fetch when parent did not pass categories prop
+        if (!categories) {
+            fetchCategories(slug_id);
+        }
+    }, [slug_id, categories]);
+    // normalize items:
+    // - if parent passed an array -> use it
+    // - if parent passed an object with .categories -> use that array
+    // - otherwise fallback to fetchedCategories
+    const items = Array.isArray(categories)
+        ? categories
+        : (categories?.categories || fetchedCategories || []);
+
+    // if nothing to show and not loading, hide section
+    if (!loading && (!items || items.length === 0)) {
+        return null;
+    }
+
     return (
         <section>
             <div className='container feature-section' dir={language?.type}>
@@ -38,10 +90,9 @@ const CategoriesContainer = ({ categories }) => {
                     </div>
 
                     <div className="flex items-center mt-6">
-                        {/* {categories?.categoriess?.length > 5 ? ( */}
                         <div className="flex justify-end items-center gap-4 flex-col md:flex-row">
                             <Link className="text-nowrap  hover:primaryColor" href="/categories/all">{t('see_all')}</Link>
-                            <div className={` md:flex hidden gap-2 ${language?.type == "RTL" ? "flex-row-reverse" : ""}`}>
+                            <div className={` md:flex hidden gap-2 ${language?.type === "RTL" ? "flex-row-reverse" : ""}`}>
                                 <button className=" group category-button-next swiperBorderColor rounded-full  !p-2 inline-block text-[15px] relative right-[5%] top-0 transition-all duration-200 ease-linear visibility-visible z-10 hover:primaryBackColor hover:text-white hover:primaryBorder">
                                     <IoMdArrowBack className='swiperNavButtonColor group-hover:text-white transition-colors duration-200' size={20} />
                                 </button>
@@ -51,7 +102,6 @@ const CategoriesContainer = ({ categories }) => {
                             </div>
 
                         </div>
-                        {/* ) : null} */}
                     </div>
                 </div>
 
@@ -62,8 +112,8 @@ const CategoriesContainer = ({ categories }) => {
                         spaceBetween={20}
                         slidesPerView={1.5}
                         navigation={{
-                            nextEl: ".category-button-prev",
-                            prevEl: ".category-button-next",
+                            nextEl: ".category-button-next",
+                            prevEl: ".category-button-prev",
                         }}
                         breakpoints={{
                             0: { slidesPerView: 1.5 },
@@ -74,13 +124,11 @@ const CategoriesContainer = ({ categories }) => {
                             1024: { slidesPerView: 6 },
                         }}
                     >
-                        {categories?.categories?.map((category, index) => {
-                            return (
-                                <SwiperSlide key={index} onClick={() => handleCategoryClick(category)}>
-                                    <CategoryCard category={category} />
-                                </SwiperSlide>
-                            )
-                        })}
+                        {items.map((category, index) => (
+                            <SwiperSlide key={category?.id || index} onClick={() => handleCategoryClick(category)}>
+                                <CategoryCard category={category} />
+                            </SwiperSlide>
+                        ))}
                     </Swiper>
 
                 </div>

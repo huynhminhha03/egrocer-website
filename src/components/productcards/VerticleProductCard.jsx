@@ -15,6 +15,7 @@ import ImageWithPlaceholder from '../image-with-placeholder/ImageWithPlaceholder
 import SingleSellerConfirmationModal from '../single-seller-confirmation-modal/SingleSellerConfirmationModal';
 import { isRtl } from '@/lib/utils';
 import { GoEye } from 'react-icons/go';
+import FormatNumber, { formatVND, formatPriceWithDiscount } from '@/components/ui/fomatnumber';
 
 
 const VerticleProductCard = ({ product, largeImage = false }) => {
@@ -359,8 +360,8 @@ const VerticleProductCard = ({ product, largeImage = false }) => {
                         </div>
                         : null}
                     <div className='flex'>
-                        {selectedVariant?.discounted_price !== 0 && selectedVariant?.discounted_price !== selectedVariant?.price ? <>  <p className='textColortext-base font-bold'>{setting?.currency}{selectedVariant?.discounted_price}</p>
-                            <p className='textColor text-[14px] font-normal leading-[17px] m-1 line-through'>{setting?.currency}{selectedVariant?.price}</p></> : <p className='textColor text-base font-bold'>{setting?.currency}{selectedVariant?.price}</p>}
+                        {selectedVariant?.discounted_price !== 0 && selectedVariant?.discounted_price !== selectedVariant?.price ? <>  <p className='textColortext-base font-bold'>{formatVND(selectedVariant?.discounted_price)} {setting?.currency}</p>
+                            <p className='textColor text-[14px] font-normal leading-[17px] m-1 line-through'>{formatVND(selectedVariant?.price)} {setting?.currency}</p></> : <p className='textColor text-base font-bold'>{formatVND(selectedVariant?.price)} {setting?.currency}</p>}
                     </div>
                 </div>
                 {!isProductAvailabel ? <div className='flex gap-0 md:gap-3 h-[80px] md:h-[44px] w-full flex-col md:flex-row'>

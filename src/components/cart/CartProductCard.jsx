@@ -266,15 +266,15 @@ const CartProductCard = ({ product, cartProductsData, setCartProductsData }) => 
                     <>
                         <h2 className="text-base font-bold">
                             {setting?.currency}
-                            {product?.discounted_price}
+                            {formatVND(product?.discounted_price)}
                         </h2>
                         <p className="text-sm font-normal line-through">
-                            {setting?.currency} {product?.price}
+                            {formatVND(product?.price)} {setting?.currency}
                         </p>
                     </>
                 ) : (
                     <h2 className="text-base font-bold">
-                        {setting?.currency} {product?.price}
+                        {formatVND(product?.price)} {setting?.currency}
                     </h2>
                 )}
             </div>

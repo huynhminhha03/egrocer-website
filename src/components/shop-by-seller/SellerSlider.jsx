@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import * as api from '@/api/apiRoutes';
 import { IoMdArrowBack, IoMdArrowForward } from 'react-icons/io'
 import Seller from './Seller'
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -17,12 +18,37 @@ import { isRtl } from '@/lib/utils';
 const SellerSlider = ({ sellers }) => {
     const rtl = isRtl();
     const language = useSelector(state => state.Language.selectedLanguage)
+    const city = useSelector(state => state.City.city)
     const router = useRouter();
+    const [sellersList, setSellersList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
     const handleSellerClick = (seller) => {
         dispatch(setFilterBySeller({ data: seller?.id }));
         router.push("/products")
     }
+    const handleFetchSellers = async () => {
+        if (!city) return;
+        setIsLoading(true)
+        try {
+            const response = await api.getSellers({
+                latitude: parseFloat(city?.latitude) || 0,
+                longitude: parseFloat(city?.longitude) || 0
+            })
+            setSellersList(response?.data || [])
+        } catch (error) {
+            console.log("Error:", error)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        // fetch only if parent did not pass sellers prop
+        if (!sellers) {
+            handleFetchSellers()
+        }
+    }, [city, sellers])
     return (
         <section className=' brandBackgroundColor '>
             <div className='container feature-section '>
@@ -57,11 +83,17 @@ const SellerSlider = ({ sellers }) => {
                                 1024: { slidesPerView: 4, spaceBetween: 20 },
                             }}
                         >
-                            {sellers?.sellers?.map((seller, index) => (
-                                <SwiperSlide key={seller.id} onClick={() => handleSellerClick(seller)} >
-                                    <Seller seller={seller} />
-                                </SwiperSlide>
-                            ))}
+                            {(() => {
+                                const items = Array.isArray(sellers)
+                                    ? sellers
+                                    : (sellers?.sellers || sellersList || []);
+                                if (!isLoading && items.length === 0) return null;
+                                return items.map((sl, index) => (
+                                    <SwiperSlide key={sl?.id || index} onClick={() => handleSellerClick(sl)}>
+                                        <Seller seller={sl} />
+                                    </SwiperSlide>
+                                ))
+                            })()}
                         </Swiper>
                     </div>
                 </div>

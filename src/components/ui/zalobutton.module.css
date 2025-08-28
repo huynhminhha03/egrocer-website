@@ -1,0 +1,155 @@
+/* ZaloButton CSS Module - Matched with original design */
+
+.outerContainer {
+  position: fixed;
+  bottom: 60px;
+  right: 0px;
+  z-index: 9999;
+  pointer-events: auto;
+  /* Debug: Make visible */
+  opacity: 1;
+  visibility: visible;
+}
+
+.outerContainer2 {
+  position: fixed;
+  bottom: 180px;
+  right: 0px;
+  z-index: 9999;
+  pointer-events: auto;
+  /* Debug: Make visible */
+  opacity: 1;
+  visibility: visible;
+}
+
+.container {
+  width: 170px;
+  height: 170px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  /* Debug border - uncomment to see containers */
+  border: 2px solid red;
+}
+
+.circle {
+  border-radius: 50%;
+  background-color: deepskyblue;
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  opacity: 0;
+  animation: scaleIn 1.5s infinite cubic-bezier(.36, .11, .89, .32);
+}
+
+.item {
+  z-index: 100;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+}
+
+.contactLink {
+  text-decoration: none;
+}
+
+.iconWrapper {
+  width: 49px;
+  height: 49px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contactIcon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  animation: shake 1s infinite;
+  animation-delay: 0s;
+}
+
+.contactIcon:hover {
+  animation: none !important;
+  transform: none;
+}
+
+/* Animations */
+@keyframes scaleIn {
+  from {
+    transform: scale(.6, .6);
+    opacity: .5;
+  }
+  to {
+    transform: scale(1.3, 1.3);
+    opacity: 0;
+  }
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translate(-3px, 0) rotate(-3deg);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translate(3px, 0) rotate(3deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    width: 140px;
+    height: 140px;
+  }
+  
+  .circle {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .circle {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .iconWrapper {
+    width: 42px;
+    height: 42px;
+  }
+  
+  .contactIcon {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .contactIcon {
+    animation: none;
+  }
+  
+  .circle {
+    animation: none;
+    opacity: 0.3;
+  }
+}

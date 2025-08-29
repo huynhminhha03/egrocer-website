@@ -62,6 +62,7 @@ import MobileNavSidebar from "../mobile-nav-sidebar/MobileNavSidebar";
 import { setAvailableLanguages } from "@/redux/slices/languageSlice";
 import { CiSun } from "react-icons/ci";
 import { FiMoon } from "react-icons/fi";
+import { formatVND } from "../ui/fomatnumber";
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
@@ -428,9 +429,9 @@ const Header = () => {
                     <span className="text-sm">{t("your_cart")}</span>
                     <span className="text-base font-bold">
                       {setting.setting && setting.setting.currency}
-                      {cart.isGuest == true
+                      {formatVND(cart.isGuest == true
                         ? cart?.guestCartTotal?.toFixed(2)
-                        : cart?.cartSubTotal?.toFixed(2)}
+                        : cart?.cartSubTotal?.toFixed(2))}
                     </span>
                   </div>
                 </div>

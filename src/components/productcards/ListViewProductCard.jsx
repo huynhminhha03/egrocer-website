@@ -358,7 +358,7 @@ const ListViewProductCard = ({ product }) => {
               : null}
             <div className='flex'>
               {selectedVariant?.discounted_price !== 0 && selectedVariant?.discounted_price !== selectedVariant?.price ? <>  <p className=' text-base font-bold'>{setting?.currency}{selectedVariant?.discounted_price}</p>
-                <p className=' text-[14px] font-normal leading-[17px] m-1 line-through'>{setting?.currency}{selectedVariant?.price}</p></> : <p className=' text-base font-bold'>{setting?.currency}{selectedVariant?.price}</p>}
+                <p className=' text-[14px] font-normal leading-[17px] m-1 line-through'>{formatVND(selectedVariant?.price)} {setting?.currency}</p></> : <p className=' text-base font-bold'>{formatVND(selectedVariant?.price)} {setting?.currency}</p>}
             </div>
           </div>
         </div>

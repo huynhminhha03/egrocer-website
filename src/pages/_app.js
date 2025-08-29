@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { ThemeProvider } from 'next-themes';
 import MetaData from "@/components/metadata-component/MetaData";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
+import ZaloButton from '@/components/ui/zalobutton';
 
 
 export default function App({ Component, pageProps }) {
@@ -45,6 +46,8 @@ export default function App({ Component, pageProps }) {
         </ThemeProvider >
       </Provider>
       </ErrorBoundary>
+      <ZaloButton 
+        />
     </main>
   );
 }

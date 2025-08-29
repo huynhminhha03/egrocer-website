@@ -8,7 +8,8 @@ import { toast } from 'react-toastify';
 import ImageWithPlaceholder from '../image-with-placeholder/ImageWithPlaceholder';
 import { t } from '@/utils/translation';
 import { FiMinus, FiPlus } from 'react-icons/fi';
-
+import { formatVND } from '../ui/fomatnumber';
+// import FormatNumber, { formatVND, formatPriceWithDiscount } from '@/components/ui/fomatnumber';
 
 const CartDrawerProductsCard = ({ product, cartProductsData, setCartProductsData }) => {
     const dispatch = useDispatch();
@@ -277,11 +278,11 @@ const CartDrawerProductsCard = ({ product, cartProductsData, setCartProductsData
                             <div className='flex flex-col sm:flex-row gap-1 items-start sm:items-center'>
                                 {product?.discounted_price != 0 && product?.discounted_price !== product?.price ? (
                                     <>
-                                        <h2 className='text-base font-bold whitespace-nowrap'>{setting?.currency}{product?.discounted_price}</h2>
-                                        <p className='text-sm font-normal line-through whitespace-nowrap opacity-50'>{setting?.currency} {product?.price}</p>
+                                        <h2 className='text-base font-bold whitespace-nowrap'>{formatVND(product?.discounted_price)} {setting?.currency}</h2>
+                                        <p className='text-sm font-normal line-through whitespace-nowrap opacity-50'>{formatVND(product?.price)} {setting?.currency}</p>
                                     </>
                                 ) : (
-                                    <h2 className='text-base font-bold whitespace-nowrap '>{setting?.currency} {product?.price}</h2>
+                                    <h2 className='text-base font-bold whitespace-nowrap '>{formatVND(product?.price)} {setting?.currency}</h2>
                                 )}
                             </div>
                         </div>

@@ -13,6 +13,7 @@ import { toast } from 'react-toastify'
 import ImageWithPlaceholder from '../image-with-placeholder/ImageWithPlaceholder'
 import SingleSellerConfirmationModal from "../single-seller-confirmation-modal/SingleSellerConfirmationModal"
 import { useState } from "react"
+import { formatVND } from "../ui/fomatnumber"
 
 
 const VariantsModal = ({ product, showVariants, setShowVariants }) => {
@@ -294,7 +295,7 @@ const VariantsModal = ({ product, showVariants, setShowVariants }) => {
                                     <div className='flex justify-between items-center px-4 py-2' key={variant?.id}>
                                         <div className='font-medium text-lg'>{`${variant?.measurement} ${variant?.stock_unit_name}`}</div>
                                         <div className='flex items-center gap-1'>
-                                            <div className='flex items-center gap-3 font-bold text-base '>{setting?.setting?.currency}{variant?.discounted_price == 0 ? variant?.price : variant?.discounted_price}
+                                            <div className='flex items-center gap-3 font-bold text-base '>{formatVND(variant?.discounted_price == 0 ? variant?.price : variant?.discounted_price)} {setting?.setting?.currency}
                                                 {!isVariantInStock ? isAdded ? <div className='flex  items-center  justify-end w-[90px]'>
                                                     <button className='primaryBackColor text-white w-8 h-7 p-1   rounded-[4px]' onClick={(e) => handleQuantityDecrease(e, variant)}><FiMinus /></button>
                                                     <input value={quantity} type='text' disabled className='w-1/2  text-center bg-transparent' />

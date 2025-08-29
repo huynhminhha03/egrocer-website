@@ -210,11 +210,11 @@ const WishlistCard = ({ product, setWishlistProducts, wishlistProducts, setTotal
                 <div className="col-span-2 text-center">
                     {product?.variants[0]?.discounted_price !== 0 ? (
                         <>
-                            <p className='textColor text-base font-bold'>{setting?.currency}{product?.variants[0]?.discounted_price}</p>
-                            <p className='textColor text-[14px] font-normal leading-[17px] m-1 line-through'>{setting?.currency}{product?.variants[0]?.price}</p>
+                            <p className='textColor text-base font-bold'>{formatVND(product?.variants[0]?.discounted_price)} {setting?.currency}</p>
+                            <p className='textColor text-[14px] font-normal leading-[17px] m-1 line-through'>{formatVND(product?.variants[0]?.price)} {setting?.currency}</p>
                         </>
                     ) : (
-                        <p className='textColor text-base font-bold'>{setting?.currency}{product?.variants[0]?.price}</p>
+                        <p className='textColor text-base font-bold'>{formatVND(product?.variants[0]?.price)} {setting?.currency}</p>
                     )}
                 </div>
 
